@@ -16,6 +16,7 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+*.pbxproj
 
 # CocoaPods
 #
@@ -34,4 +35,3 @@ Carthage/Build
 
 # Ignore those pesky DS_Store files!
 .DS_Store
-*.pbxproj
