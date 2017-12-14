@@ -10,8 +10,13 @@ import Foundation
 import MobileCoreServices
 import UIKit
 
-extension UIViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+// Regift constants
+let frameCount = 32;
+let delayTime: Float = 0.2
+let loopCount = 0;
 
+extension UIViewController: UINavigationControllerDelegate {
+    
     @IBAction func presentVideoOptions(_ sender: Any) {
         if(!UIImagePickerController.isSourceTypeAvailable(.camera)) {
             launchCamera();
@@ -38,29 +43,44 @@ extension UIViewController: UIImagePickerControllerDelegate, UINavigationControl
     }
     
     func launchCamera() {
-        present(pickerController(with: .photoLibrary), animated: true, completion: nil);
+        present(pickerController(with: .camera), animated: true, completion: nil);
     }
     
     func launchPhotoLibrary() {
         present(pickerController(with: .photoLibrary), animated: true, completion: nil);
     }
-    
-    public func pickerController(with source: UIImagePickerControllerSourceType) -> UIImagePickerController {
+
+    func pickerController(with source: UIImagePickerControllerSourceType) -> UIImagePickerController {
         
-        var picker: UIImagePickerController = UIImagePickerController();
+        let picker: UIImagePickerController = UIImagePickerController();
         picker.sourceType = source;
-        picker.mediaTypes = [kUTTypeMovie as! String];
+        picker.mediaTypes = [kUTTypeMovie as String];
         picker.allowsEditing = false;
         picker.delegate = self;
         
         return picker;
     }
-    
+}
+
+extension UIViewController: UIImagePickerControllerDelegate {
+
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        return;
+        dismiss(animated: true, completion: nil);
     }
     
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        return;
+        let mediaType = info[UIImagePickerControllerMediaType] as! String;
+        
+        if(mediaType == kUTTypeMovie as String) {
+            let videoURL = info[UIImagePickerControllerMediaURL] as! NSURL;
+            //UISaveVideoAtPathToSavedPhotosAlbum(videoURL.path!, nil, nil, nil);
+            dismiss(animated: true, completion: nil);
+            convertVideoToGIF(videoURL: videoURL);
+        }
+    }
+    
+    func convertVideoToGIF(videoURL: NSURL) {
+        let regift = Regift(sourceFileURL: videoURL, frameCount: frameCount, delayTime: delayTime);
+        let gifURL = regift.createGif();
     }
 }
