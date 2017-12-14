@@ -11,8 +11,8 @@ import MobileCoreServices
 import UIKit
 
 // Regift constants
-let frameCount = 32;
-let delayTime: Float = 0.2
+let frameCount = 64;
+let delayTime: Float = 0.05
 let loopCount = 0;
 
 extension UIViewController: UINavigationControllerDelegate {
@@ -82,5 +82,12 @@ extension UIViewController: UIImagePickerControllerDelegate {
     func convertVideoToGIF(videoURL: NSURL) {
         let regift = Regift(sourceFileURL: videoURL, frameCount: frameCount, delayTime: delayTime);
         let gifURL = regift.createGif();
+        displayGif(url: gifURL!);
+    }
+    
+    func displayGif(url: NSURL) {
+        let gifEditorVC = storyboard?.instantiateViewController(withIdentifier: "GifEditorViewController") as! GifEditorViewController;
+        gifEditorVC.gifURL = url;
+        navigationController?.pushViewController(gifEditorVC, animated: true);
     }
 }
